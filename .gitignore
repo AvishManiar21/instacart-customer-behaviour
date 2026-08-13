@@ -1,0 +1,20 @@
+# Raw data — 680 MB, reproduced by the notebook's download cell
+data/
+*.csv
+*.parquet
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Credentials — never commit
+kaggle.json
+.kaggle/
+
+# OS
+Thumbs.db
+.DS_Store
