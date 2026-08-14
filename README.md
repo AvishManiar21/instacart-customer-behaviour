@@ -6,7 +6,7 @@ discovery gives way to routine.
 
 **Stack:** Python · pandas · NumPy · matplotlib · seaborn · Google Colab
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AvishManiar21/instacart-customer-behaviour/blob/main/notebooks/01-analysis.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AvishManiar21/instacart-customer-behaviour/blob/main/Instacart.ipynb)
 
 ---
 
