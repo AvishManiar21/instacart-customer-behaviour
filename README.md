@@ -12,7 +12,8 @@ discovery gives way to routine.
 
 ## Status
 
-🚧 In progress.
+**Profiling complete** — all five tables, four data traps found and quantified.
+Analysis in progress.
 
 ---
 
@@ -46,23 +47,41 @@ So this is a study of *behaviour*, not commerce.
 
 ---
 
-## Known traps
+## Data traps found
 
-Documented as they're found — each produces a plausible but wrong answer.
+Each produces a plausible but wrong answer, and each was verified rather than
+assumed.
 
-**1. `days_since_prior_order` is censored at 30.** 369,323 orders (11.5%) sit
-at exactly 30, which means "30 or more". Treating it as a literal 30 understates
-long gaps and corrupts any purchase-interval or churn calculation.
+**1. `days_since_prior_order` is censored at 30.** The column stops dead at 30,
+where 369,323 orders (11.5%) pile up against ~20,000 on each neighbouring day.
+`30` means "30 or more".
 
-**2. `eval_set` splits the data three ways.** `prior` (3.21M), `train` (131k),
-`test` (75k). The test orders have **no product rows at all** — they were what
-competitors had to predict. Counting orders without filtering inflates totals.
+The true gaps were destroyed before publication — but `order_dow` still encodes
+them. A 30-day gap must shift the day of week by exactly `30 mod 7 = 2`; any
+other shift proves a longer gap. Validated at **100.00% accuracy** on the 2.8M
+orders where the gap is known, then applied: **314,925 orders (85.3%) are
+provably longer than 30 days.**
 
-**3. Order #1 has no `days_since_prior_order`.** 206,209 NULLs, exactly one per
-user. Structural, not missing.
+Consequence: the mean gap (11.1 days) understates reality and is never quoted.
+The median (7 days) sits far below the cap and is used throughout.
 
-**4. Reorder rate is measured per item, not per order.** Averaging at the wrong
-grain gives a different number.
+**2. Structural zeros in `reordered`.** A customer's first order cannot contain a
+reorder. 2,078,068 rows sit in first orders and exactly **0** are flagged as
+reorders — 15.6% of every zero in the column. Including them gives a 59.0%
+reorder rate; excluding them, **63.0%**. Both are valid, for different questions.
+
+**3. `eval_set` splits the data three ways.** `prior` (3.21M), `train` (131k),
+`test` (75k). Verified that every `prior` order has product rows and **no `test`
+or `train` order appears** in the prior file — the test orders have no product
+data anywhere. Analysis uses `prior`.
+
+**4. Placeholder categories.** `missing` (1,258 products) and `other` (548) are
+not departments. Both appear at aisle *and* department level on exactly the same
+rows — zero products are uncategorised at one level but not the other. Flagged
+via `is_categorised` rather than silently dropped.
+
+Also: `order_dow` has **no documented mapping** to real weekday names, so days
+are referred to by number throughout rather than guessed at.
 
 ---
 
